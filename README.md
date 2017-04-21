@@ -1,4 +1,5 @@
 Based on emote scripts from Dolware and gui script from Ideo
+
 This script is used to show emotes.
 
 Controller users:
@@ -16,4 +17,5 @@ Those are default sellphone bindings, if you changed it, refer to sellphone bind
 Enjoy !
 
 GUI script: https://forum.fivem.net/t/release-gui-script-v0-8/11197
+
 Emote script: https://forum.fivem.net/t/release-emotes-loadouts-showid-storeweapons-mdt-0-2/10862

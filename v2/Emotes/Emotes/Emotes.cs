@@ -44,9 +44,14 @@ namespace Emotes
 
         public async Task OnTick()
         {
-            // Show notification when Z was pressed
-            if (Game.IsControlJustReleased(0, Control.MultiplayerInfo))
+            // Cancel emote when player is moving
+            if (Game.IsControlJustReleased(0, Control.MoveUpOnly) ||
+                Game.IsControlJustReleased(0, Control.MoveDownOnly) ||
+                Game.IsControlJustReleased(0, Control.MoveLeftOnly) ||
+                Game.IsControlJustReleased(0, Control.MoveRightOnly))
+            {
                 CancelEmote();
+            }
         }
 
         #region Methods

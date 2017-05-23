@@ -1,0 +1,9 @@
+C:\Users\marceau\Desktop\Code\git_repository\Emotes\Emotes\bin\x64\Debug\emotes.net.dll
+C:\Users\marceau\Desktop\Code\git_repository\Emotes\Emotes\bin\x64\Debug\emotes.net.pdb
+C:\Users\marceau\Desktop\Code\git_repository\Emotes\Emotes\bin\x64\Debug\CitizenFX.Core.dll
+C:\Users\marceau\Desktop\Code\git_repository\Emotes\Emotes\bin\x64\Debug\MsgPack.dll
+C:\Users\marceau\Desktop\Code\git_repository\Emotes\Emotes\bin\x64\Debug\CitizenFX.Core.pdb
+C:\Users\marceau\Desktop\Code\git_repository\Emotes\Emotes\bin\x64\Debug\MsgPack.pdb
+C:\Users\marceau\Desktop\Code\git_repository\Emotes\Emotes\bin\x64\Debug\MsgPack.xml
+C:\Users\marceau\Desktop\Code\git_repository\Emotes\Emotes\obj\x64\Debug\emotes.net.dll
+C:\Users\marceau\Desktop\Code\git_repository\Emotes\Emotes\obj\x64\Debug\emotes.net.pdb

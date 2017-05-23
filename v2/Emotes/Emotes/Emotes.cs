@@ -53,7 +53,7 @@ namespace Emotes
 
         void PrintEmoteList()
         {
-            TriggerEvent("chatMessage", "EMOTES", new int[] { 255, 0, 0 } , emotesText);
+            TriggerEvent("chatMessage", "ALERT", new int[] { 255, 0, 0 } , emotesText);
         }
 
         void CancelEmote()

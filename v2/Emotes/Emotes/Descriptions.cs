@@ -10,18 +10,23 @@ namespace Emotes
     {
         public static readonly string[][] DescriptionStrings =
         {
-            new string[] {"EN", "FR"},
-            new string[] {"EN", "FR"},
-            new string[] {"EN", "FR"},
-            new string[] {"EN", "FR"},
-            new string[] {"EN", "FR"},
-            new string[] {"EN", "FR"},
-            new string[] {"EN", "FR"},
-            new string[] {"EN", "FR"},
-            new string[] {"EN", "FR"},
-            new string[] {"EN", "FR"},
-            new string[] {"EN", "FR"},
-            new string[] {"EN", "FR"}
+            new string[] {"Cop", "Policier"},
+            new string[] {"Sit", "S'assoir"},
+            new string[] {"Kneel", "S'agenouiller"},
+            new string[] {"Medic", "Médecin"},
+            new string[] {"Notepad", "Bloc-note"},
+            new string[] {"Traffic", "Circulation"},
+            new string[] {"Photo", "Photo"},
+            new string[] {"Clipboard", "Presse-papier"},
+            new string[] {"Lean", "S'appuyer"},
+            new string[] {"Smoke", "Fumer"},
+            new string[] {"Drink", "Boire"}
+        };
+
+        public static readonly string[] ErrorStrings =
+        {
+            "You are in a vehicle",
+            "Vous êtes dans un véhicule"
         };
     }
 }

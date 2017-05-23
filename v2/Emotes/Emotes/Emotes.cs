@@ -14,17 +14,17 @@ namespace Emotes
 
         static List<Emote> emotes = new List<Emote>()
         {
-            new Emote(EmoteTypeEnum.WORLD_HUMAN_COP_IDLES, "/cop", 0, true),
-            new Emote(EmoteTypeEnum.WORLD_HUMAN_PICNIC, "/sit", 0, true),
-            new Emote(EmoteTypeEnum.CODE_HUMAN_MEDIC_KNEEL, "/kneel", 0, true),
-            new Emote(EmoteTypeEnum.CODE_HUMAN_MEDIC_TEND_TO_DEAD, "/medic", 0, true),
-            new Emote(EmoteTypeEnum.CODE_HUMAN_MEDIC_TIME_OF_DEATH, "/notepad", 0, true),
-            new Emote(EmoteTypeEnum.WORLD_HUMAN_CAR_PARK_ATTENDANT, "/traffic", 0, false),
-            new Emote(EmoteTypeEnum.WORLD_HUMAN_PAPARAZZI, "/photo", 0, false),
-            new Emote(EmoteTypeEnum.WORLD_HUMAN_CLIPBOARD, "/clipboard", 0, false),
-            new Emote(EmoteTypeEnum.WORLD_HUMAN_LEANING, "/lean", 0, true),
-            new Emote(EmoteTypeEnum.WORLD_HUMAN_SMOKING, "/smoke", 0, true),
-            new Emote(EmoteTypeEnum.WORLD_HUMAN_DRINKING, "/drink", 0, true)
+            new Emote(EmoteTypeEnum.WORLD_HUMAN_COP_IDLES, LanguageEnum.EN, "/cop", 0, true),
+            new Emote(EmoteTypeEnum.WORLD_HUMAN_PICNIC, LanguageEnum.EN, "/sit", 0, true),
+            new Emote(EmoteTypeEnum.CODE_HUMAN_MEDIC_KNEEL, LanguageEnum.EN, "/kneel", 0, true),
+            new Emote(EmoteTypeEnum.CODE_HUMAN_MEDIC_TEND_TO_DEAD, LanguageEnum.EN, "/medic", 0, true),
+            new Emote(EmoteTypeEnum.CODE_HUMAN_MEDIC_TIME_OF_DEATH, LanguageEnum.EN, "/notepad", 0, true),
+            new Emote(EmoteTypeEnum.WORLD_HUMAN_CAR_PARK_ATTENDANT, LanguageEnum.EN, "/traffic", 0, false),
+            new Emote(EmoteTypeEnum.WORLD_HUMAN_PAPARAZZI, LanguageEnum.EN, "/photo", 0, false),
+            new Emote(EmoteTypeEnum.WORLD_HUMAN_CLIPBOARD, LanguageEnum.EN, "/clipboard", 0, false),
+            new Emote(EmoteTypeEnum.WORLD_HUMAN_LEANING, LanguageEnum.EN, "/lean", 0, true),
+            new Emote(EmoteTypeEnum.WORLD_HUMAN_SMOKING, LanguageEnum.EN, "/smoke", 0, true),
+            new Emote(EmoteTypeEnum.WORLD_HUMAN_DRINKING, LanguageEnum.EN, "/drink", 0, true)
         };
 
         public Emotes()
@@ -68,20 +68,25 @@ namespace Emotes
         void ChatMessage(dynamic _source, dynamic _name, dynamic _message)
         {
             string message = (string)_message;
-
-            Screen.ShowNotification(message);
-
+            
             if (message.StartsWith("/emote"))
                 PrintEmoteList();
-            else if (message.StartsWith("/cancelemote"))
+            else if (message.StartsWith("/cancel"))
                 CancelEmote();
             else
             {
                 Emote emote = emotes.FirstOrDefault(o => o.Command == message);
                 if (emote != null && Game.PlayerPed != null)
                 {
-                    Function.Call(Hash.TASK_START_SCENARIO_IN_PLACE, Game.PlayerPed, emote.EmoteType.ToString(), 0, emote.ToRename);
-                    Screen.ShowNotification(emote.Description);
+                    bool isInVehicle = Function.Call<bool>(Hash.IS_PED_IN_ANY_VEHICLE, Game.PlayerPed, true);
+                    
+                    if (!isInVehicle)
+                    {
+                        Function.Call(Hash.TASK_START_SCENARIO_IN_PLACE, Game.PlayerPed, emote.EmoteType.ToString(), emote.IntValue, emote.BoolValue);
+                        Screen.ShowNotification(emote.Description);
+                    }
+                    else
+                        Screen.ShowNotification(Descriptions.ErrorStrings[(int)LanguageEnum.EN]);
                 }
             }
         }

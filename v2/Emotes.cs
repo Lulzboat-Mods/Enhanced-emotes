@@ -5,30 +5,35 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using NativeUI;
+using Newtonsoft.Json.Linq;
+using System.IO;
+using Newtonsoft.Json;
 
 namespace Emotes
 {
     public class Emotes : BaseScript
     {
         static string emotesText = string.Empty;
-
-        static List<Emote> emotes = new List<Emote>()
-        {
-            new Emote(EmoteTypeEnum.WORLD_HUMAN_COP_IDLES, LanguageEnum.EN, "/cop", 0, true),
-            new Emote(EmoteTypeEnum.WORLD_HUMAN_PICNIC, LanguageEnum.EN, "/sit", 0, true),
-            new Emote(EmoteTypeEnum.CODE_HUMAN_MEDIC_KNEEL, LanguageEnum.EN, "/kneel", 0, true),
-            new Emote(EmoteTypeEnum.CODE_HUMAN_MEDIC_TEND_TO_DEAD, LanguageEnum.EN, "/medic", 0, true),
-            new Emote(EmoteTypeEnum.CODE_HUMAN_MEDIC_TIME_OF_DEATH, LanguageEnum.EN, "/notepad", 0, true),
-            new Emote(EmoteTypeEnum.WORLD_HUMAN_CAR_PARK_ATTENDANT, LanguageEnum.EN, "/traffic", 0, false),
-            new Emote(EmoteTypeEnum.WORLD_HUMAN_PAPARAZZI, LanguageEnum.EN, "/photo", 0, false),
-            new Emote(EmoteTypeEnum.WORLD_HUMAN_CLIPBOARD, LanguageEnum.EN, "/clipboard", 0, false),
-            new Emote(EmoteTypeEnum.WORLD_HUMAN_LEANING, LanguageEnum.EN, "/lean", 0, true),
-            new Emote(EmoteTypeEnum.WORLD_HUMAN_SMOKING, LanguageEnum.EN, "/smoke", 0, true),
-            new Emote(EmoteTypeEnum.WORLD_HUMAN_DRINKING, LanguageEnum.EN, "/drink", 0, true)
-        };
+        static StringsModel model;
+        static List<Emote> emotes = new List<Emote>();
 
         public Emotes()
         {
+            model = JsonConvert.DeserializeObject<StringsModel>(File.ReadAllText(@".\strings.json"));
+
+            foreach (EmoteModel emoteModel in model.emotes)
+            {
+                emotes.Add(new Emote()
+                {
+                    EmoteType = emoteModel.hash,
+                    Command = emoteModel.title,
+                    Description = emoteModel.description.ElementAt(model.language).title,
+                    IntValue = 0,
+                    BoolValue = emoteModel.boolean
+                });
+            }
+
             foreach (Emote emote in emotes)
             {
                 if (emotesText == string.Empty)
@@ -36,9 +41,20 @@ namespace Emotes
                 else
                     emotesText += ", " + emote.Command;
             }
+            
+            /*
+            menu = new UIMenu("Emotes", "");
+            menu.OnItemSelect += OnItemSelect;
+            menu.Visible = false;
 
+            foreach (Emote emote in emotes)
+            {
+                menu.AddItem(new UIMenuItem(emote.Description));
+            }
+            */
+
+            // FiveM related things
             EventHandlers["chatMessage"] += new Action<dynamic, dynamic, dynamic>(ChatMessage);
-
             Tick += OnTick;
         }
 
@@ -66,14 +82,46 @@ namespace Emotes
             Function.Call(Hash.CLEAR_PED_TASKS, Game.PlayerPed);
         }
 
+        void PlayEmote(Emote emote)
+        {
+            if (Game.PlayerPed != null)
+            {
+                bool isInVehicle = Function.Call<bool>(Hash.IS_PED_IN_ANY_VEHICLE, Game.PlayerPed, true);
+
+                if (!isInVehicle)
+                {
+                    Function.Call(Hash.TASK_START_SCENARIO_IN_PLACE, Game.PlayerPed, emote.EmoteType, emote.IntValue, emote.BoolValue);
+                    Screen.ShowNotification(emote.Description);
+                }
+                else
+                    Screen.ShowNotification(model.errorVehicle.description.ElementAt(model.language).title);
+            }
+            else
+                Screen.ShowNotification(model.errorPlayerID.description.ElementAt(model.language).title);
+        }
+
         #endregion
 
         #region Events
 
+        /*
+        void OnItemSelect(UIMenu sender, UIMenuItem item, int index)
+        {
+            Emote emote = emotes.FirstOrDefault(o => o.Description == item.Text);
+
+            if (emote != null)
+                PlayEmote(emote);
+            else
+                Screen.ShowNotification(Strings.ErrorUnexpected[(int)LanguageEnum.EN]);
+
+            menu.Visible = false;
+        }
+        */
+
         void ChatMessage(dynamic _source, dynamic _name, dynamic _message)
         {
             string message = (string)_message;
-            
+
             if (message.StartsWith("/emote"))
                 PrintEmoteList();
             else if (message.StartsWith("/cancel"))
@@ -81,18 +129,10 @@ namespace Emotes
             else
             {
                 Emote emote = emotes.FirstOrDefault(o => o.Command == message);
-                if (emote != null && Game.PlayerPed != null)
-                {
-                    bool isInVehicle = Function.Call<bool>(Hash.IS_PED_IN_ANY_VEHICLE, Game.PlayerPed, true);
-                    
-                    if (!isInVehicle)
-                    {
-                        Function.Call(Hash.TASK_START_SCENARIO_IN_PLACE, Game.PlayerPed, emote.EmoteType.ToString(), emote.IntValue, emote.BoolValue);
-                        Screen.ShowNotification(emote.Description);
-                    }
-                    else
-                        Screen.ShowNotification(Descriptions.ErrorStrings[(int)LanguageEnum.EN]);
-                }
+                if (emote != null)
+                    PlayEmote(emote);
+                else
+                    Screen.ShowNotification(model.errorBadArgs.description.ElementAt(model.language).title);
             }
         }
 

@@ -5,10 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using NativeUI;
-using Newtonsoft.Json.Linq;
 using System.IO;
-using Newtonsoft.Json;
+using System.Web.Script.Serialization;
 
 namespace Emotes
 {
@@ -20,7 +18,11 @@ namespace Emotes
 
         public Emotes()
         {
-            model = JsonConvert.DeserializeObject<StringsModel>(File.ReadAllText(@".\strings.json"));
+            JavaScriptSerializer serializer = new JavaScriptSerializer();
+
+            model = serializer.Deserialize<StringsModel>(File.ReadAllText(@".\strings.json"));
+
+            //model = JsonConvert.DeserializeObject<StringsModel>(File.ReadAllText(@".\strings.json"));
 
             foreach (EmoteModel emoteModel in model.emotes)
             {

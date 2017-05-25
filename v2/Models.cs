@@ -9,10 +9,10 @@ namespace Emotes
     public class StringsModel
     {
         public List<EmoteModel> emotes;
-        public ErrorModel errorVehicle;
-        public ErrorModel errorBadArgs;
-        public ErrorModel errorUnexpected;
-        public ErrorModel errorPlayerID;
+        public List<DescriptionModel> errorVehicle;
+        public List<DescriptionModel> errorBadArgs;
+        public List<DescriptionModel> errorUnexpected;
+        public List<DescriptionModel> errorPlayerID;
 
         // CONFIG
 
@@ -27,11 +27,12 @@ namespace Emotes
         public List<DescriptionModel> description;
     }
 
+    /*
     public class ErrorModel
     {
         public List<DescriptionModel> description;
     }
-
+    */
     public class DescriptionModel
     {
         public string title;

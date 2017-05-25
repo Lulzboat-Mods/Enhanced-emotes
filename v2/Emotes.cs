@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.IO;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 namespace Emotes
 {
@@ -18,15 +19,7 @@ namespace Emotes
 
         public Emotes()
         {
-            JObject jsonObject = JObject.Parse(File.ReadAllText(@".\strings.json"));
-            model = jsonObject.ToObject<StringsModel>();
-
-
-            //JavaScriptSerializer serializer = new JavaScriptSerializer();
-
-            //model = serializer.Deserialize<StringsModel>(File.ReadAllText(@".\strings.json"));
-
-            //model = JsonConvert.DeserializeObject<StringsModel>(File.ReadAllText(@".\strings.json"));
+            model = JsonConvert.DeserializeObject<StringsModel>(File.ReadAllText(@".\strings.json"));
 
             foreach (EmoteModel emoteModel in model.emotes)
             {
@@ -100,10 +93,10 @@ namespace Emotes
                     Screen.ShowNotification(emote.Description);
                 }
                 else
-                    Screen.ShowNotification(model.errorVehicle.description.ElementAt(model.language).title);
+                    Screen.ShowNotification(model.errorVehicle.ElementAt(model.language).title);
             }
             else
-                Screen.ShowNotification(model.errorPlayerID.description.ElementAt(model.language).title);
+                Screen.ShowNotification(model.errorPlayerID.ElementAt(model.language).title);
         }
 
         #endregion
@@ -138,7 +131,7 @@ namespace Emotes
                 if (emote != null)
                     PlayEmote(emote);
                 else
-                    Screen.ShowNotification(model.errorBadArgs.description.ElementAt(model.language).title);
+                    Screen.ShowNotification(model.errorBadArgs.ElementAt(model.language).title);
             }
         }
 

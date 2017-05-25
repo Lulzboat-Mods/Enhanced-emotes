@@ -120,8 +120,6 @@
     { "title": "Player ID doesn't match" },
     { "title": "L'ID du joueur n'est pas bon" }
   ],
-
-  // CONFIG
-
+  
   "language": 0
 }

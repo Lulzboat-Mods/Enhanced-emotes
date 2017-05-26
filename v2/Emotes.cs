@@ -6,8 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.IO;
-using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
+using System.Net.Http;
 
 namespace Emotes
 {
@@ -16,31 +16,9 @@ namespace Emotes
         static string emotesText = string.Empty;
         static StringsModel model;
         static List<Emote> emotes = new List<Emote>();
-
+        
         public Emotes()
         {
-            model = JsonConvert.DeserializeObject<StringsModel>(File.ReadAllText(@".\strings.json"));
-
-            foreach (EmoteModel emoteModel in model.emotes)
-            {
-                emotes.Add(new Emote()
-                {
-                    EmoteType = emoteModel.hash,
-                    Command = emoteModel.title,
-                    Description = emoteModel.description.ElementAt(model.language).title,
-                    IntValue = 0,
-                    BoolValue = emoteModel.boolean
-                });
-            }
-
-            foreach (Emote emote in emotes)
-            {
-                if (emotesText == string.Empty)
-                    emotesText += emote.Command;
-                else
-                    emotesText += ", " + emote.Command;
-            }
-            
             /*
             menu = new UIMenu("Emotes", "");
             menu.OnItemSelect += OnItemSelect;
@@ -70,6 +48,33 @@ namespace Emotes
         }
 
         #region Methods
+
+        async Task InitializeEmote()
+        {
+            HttpClient httpClient = new HttpClient();
+            HttpResponseMessage message = await httpClient.GetAsync("https://raw.githubusercontent.com/Lulzboat-Mods/Enhanced-emotes/master/v2/strings.json");
+            model = JsonConvert.DeserializeObject<StringsModel>(await message.Content.ReadAsStringAsync());
+
+            foreach (EmoteModel emoteModel in model.emotes)
+            {
+                emotes.Add(new Emote()
+                {
+                    EmoteType = emoteModel.hash,
+                    Command = emoteModel.title,
+                    Description = emoteModel.description.ElementAt(model.language).title,
+                    IntValue = 0,
+                    BoolValue = emoteModel.boolean
+                });
+            }
+
+            foreach (Emote emote in emotes)
+            {
+                if (emotesText == string.Empty)
+                    emotesText += emote.Command;
+                else
+                    emotesText += ", " + emote.Command;
+            }
+        }
 
         void PrintEmoteList()
         {
@@ -117,11 +122,15 @@ namespace Emotes
         }
         */
 
-        void ChatMessage(dynamic _source, dynamic _name, dynamic _message)
+        async void ChatMessage(dynamic _source, dynamic _name, dynamic _message)
         {
             string message = (string)_message;
 
-            if (message.StartsWith("/emote"))
+            Screen.ShowNotification(message);
+
+            if (message.StartsWith("/init"))
+                await InitializeEmote();
+            else if (message.StartsWith("/emote"))
                 PrintEmoteList();
             else if (message.StartsWith("/cancel"))
                 CancelEmote();

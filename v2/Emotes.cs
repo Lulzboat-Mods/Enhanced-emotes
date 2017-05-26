@@ -5,9 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.IO;
-using Newtonsoft.Json;
-using System.Net.Http;
+using System.Web.Script.Serialization;
 
 namespace Emotes
 {
@@ -16,9 +14,20 @@ namespace Emotes
         static string emotesText = string.Empty;
         static StringsModel model;
         static List<Emote> emotes = new List<Emote>();
-        
+        static bool isInit = false;
+
         public Emotes()
         {
+            //InitializeEmote();
+            /*Task.Run(async () =>
+            {
+                await InitializeEmote();
+            });
+
+            while (isInit) ;
+            */
+            //Screen.ShowNotification("Init done");
+
             /*
             menu = new UIMenu("Emotes", "");
             menu.OnItemSelect += OnItemSelect;
@@ -49,12 +58,25 @@ namespace Emotes
 
         #region Methods
 
-        async Task InitializeEmote()
+        string LoadFile()
         {
-            HttpClient httpClient = new HttpClient();
-            HttpResponseMessage message = await httpClient.GetAsync("https://raw.githubusercontent.com/Lulzboat-Mods/Enhanced-emotes/master/v2/strings.json");
-            model = JsonConvert.DeserializeObject<StringsModel>(await message.Content.ReadAsStringAsync());
+            return (Function.Call<string>(Hash.LOAD_RESOURCE_FILE, "emotes", "strings.json"));
+            //Screen.ShowNotification(test.Count().ToString());
+        }
 
+        void LoadModelFromString(string str)
+        {
+            Debug.WriteLine("JSON: {0}", str);
+
+            //JavaScriptSerializer serializer = new JavaScriptSerializer();
+
+            //StringsModel myObject = serializer.Deserialize<StringsModel>(str);
+            //JsonData data = JsonMapper.ToObject(str);
+            //JObject objet = JObject.Parse(str); // CRASH
+
+            //model = serializer.Deserialize<StringsModel>(str);
+            //model = JsonConvert.DeserializeObject<StringsModel>(str);
+            /*
             foreach (EmoteModel emoteModel in model.emotes)
             {
                 emotes.Add(new Emote()
@@ -74,6 +96,7 @@ namespace Emotes
                 else
                     emotesText += ", " + emote.Command;
             }
+            */
         }
 
         void PrintEmoteList()
@@ -122,14 +145,17 @@ namespace Emotes
         }
         */
 
-        async void ChatMessage(dynamic _source, dynamic _name, dynamic _message)
+        void ChatMessage(dynamic _source, dynamic _name, dynamic _message)
         {
             string message = (string)_message;
+            string test = string.Empty;
 
-            Screen.ShowNotification(message);
-
-            if (message.StartsWith("/init"))
-                await InitializeEmote();
+            if (message.StartsWith("/load"))
+            {
+                test = LoadFile();
+                Screen.ShowNotification("Test: " + test.Length);
+                LoadModelFromString(test); // 2 times?
+            }
             else if (message.StartsWith("/emote"))
                 PrintEmoteList();
             else if (message.StartsWith("/cancel"))

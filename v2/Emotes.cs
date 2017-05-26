@@ -18,16 +18,9 @@ namespace Emotes
 
         public Emotes()
         {
-            //InitializeEmote();
-            /*Task.Run(async () =>
-            {
-                await InitializeEmote();
-            });
-
-            while (isInit) ;
-            */
-            //Screen.ShowNotification("Init done");
-
+            /* 
+             * MENU LATER
+             */
             /*
             menu = new UIMenu("Emotes", "");
             menu.OnItemSelect += OnItemSelect;
@@ -68,14 +61,19 @@ namespace Emotes
         {
             Debug.WriteLine("JSON: {0}", str);
 
-            //JavaScriptSerializer serializer = new JavaScriptSerializer();
+            // First way to parse json using System.Web.Script.Serialization;
+            /*
+            JavaScriptSerializer serializer = new JavaScriptSerializer();
+            StringsModel myObject = serializer.Deserialize<StringsModel>(str);
+            */
 
-            //StringsModel myObject = serializer.Deserialize<StringsModel>(str);
-            //JsonData data = JsonMapper.ToObject(str);
-            //JObject objet = JObject.Parse(str); // CRASH
+            // Second way using Newtonsoft.Json;
+            /*
+            model = serializer.Deserialize<StringsModel>(str);
+            model = JsonConvert.DeserializeObject<StringsModel>(str);
+            */
 
-            //model = serializer.Deserialize<StringsModel>(str);
-            //model = JsonConvert.DeserializeObject<StringsModel>(str);
+            // WHEN JSON PARSING WILL WORK
             /*
             foreach (EmoteModel emoteModel in model.emotes)
             {

@@ -14,7 +14,6 @@ namespace Emotes
         static string emotesText = string.Empty;
         static StringsModel model;
         static List<Emote> emotes = new List<Emote>();
-        static bool isInit = false;
 
         public Emotes()
         {
@@ -54,7 +53,6 @@ namespace Emotes
         string LoadFile()
         {
             return (Function.Call<string>(Hash.LOAD_RESOURCE_FILE, "emotes", "strings.json"));
-            //Screen.ShowNotification(test.Count().ToString());
         }
 
         void LoadModelFromString(string str)
@@ -69,8 +67,7 @@ namespace Emotes
 
             // Second way using Newtonsoft.Json;
             /*
-            model = serializer.Deserialize<StringsModel>(str);
-            model = JsonConvert.DeserializeObject<StringsModel>(str);
+            StringsModel myObject = JsonConvert.DeserializeObject<StringsModel>(str);
             */
 
             // WHEN JSON PARSING WILL WORK

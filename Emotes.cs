@@ -5,15 +5,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
+using TinyJson;
 
 namespace Emotes
 {
     public class Emotes : BaseScript
     {
-        static string emotesText = string.Empty;
-        static StringsModel model;
-        static List<Emote> emotes = new List<Emote>();
+        string emotesText = string.Empty;
+        List<Emote> emotes = new List<Emote>();
+        List<string> errors = new List<string>();
+        Config config = new Config();
 
         public Emotes()
         {
@@ -30,6 +31,9 @@ namespace Emotes
                 menu.AddItem(new UIMenuItem(emote.Description));
             }
             */
+
+            LoadConfig();
+            LoadJson();
 
             // FiveM related things
             EventHandlers["chatMessage"] += new Action<dynamic, dynamic, dynamic>(ChatMessage);
@@ -49,41 +53,48 @@ namespace Emotes
         }
 
         #region Methods
-
-        string LoadFile()
+        
+        void LoadConfig()
         {
-            return (Function.Call<string>(Hash.LOAD_RESOURCE_FILE, "emotes", "strings.json"));
+            string configFile = Function.Call<string>(Hash.LOAD_RESOURCE_FILE, "emotes", "config.ini");
+            Debug.WriteLine("{0}", configFile);
+            string[] lines = configFile.Split('\n');
+
+            foreach (string line in lines)
+            {
+                string[] content = line.Split('=');
+
+                if (content[0].ToLower() == "jsonfile")
+                    config.JsonFile = content[1];
+            }
         }
 
-        void LoadModelFromString(string str)
+        void LoadJson()
         {
-            Debug.WriteLine("JSON: {0}", str);
+            Debug.WriteLine("{0}", config.JsonFile);
+            
+            string jsonString = Function.Call<string>(Hash.LOAD_RESOURCE_FILE, "emotes", "english.json"); // I have to find how to dynamicly load files, feels like i can only pass const strings
+            Debug.WriteLine("{0}", jsonString);
 
-            // First way to parse json using System.Web.Script.Serialization;
-            /*
-            JavaScriptSerializer serializer = new JavaScriptSerializer();
-            StringsModel myObject = serializer.Deserialize<StringsModel>(str);
-            */
+            Dictionary<string, object> jsonObject = (Dictionary<string, object>)jsonString.FromJson<object>();
 
-            // Second way using Newtonsoft.Json;
-            /*
-            StringsModel myObject = JsonConvert.DeserializeObject<StringsModel>(str);
-            */
+            List<object> emoteList = (List<object>)jsonObject["emotes"];
 
-            // WHEN JSON PARSING WILL WORK
-            /*
-            foreach (EmoteModel emoteModel in model.emotes)
+            foreach (Dictionary<string, object> emote in emoteList)
             {
                 emotes.Add(new Emote()
                 {
-                    EmoteType = emoteModel.hash,
-                    Command = emoteModel.title,
-                    Description = emoteModel.description.ElementAt(model.language).title,
+                    EmoteType = (string)emote["hash"],
+                    Command = (string)emote["title"],
+                    Description = (string)emote["description"],
                     IntValue = 0,
-                    BoolValue = emoteModel.boolean
+                    BoolValue = (bool)emote["boolean"]
                 });
             }
-
+            errors.Add((string)jsonObject["errorVehicle"]);
+            errors.Add((string)jsonObject["errorUnexpected"]);
+            errors.Add((string)jsonObject["errorPlayerID"]);
+            
             foreach (Emote emote in emotes)
             {
                 if (emotesText == string.Empty)
@@ -91,7 +102,6 @@ namespace Emotes
                 else
                     emotesText += ", " + emote.Command;
             }
-            */
         }
 
         void PrintEmoteList()
@@ -116,10 +126,10 @@ namespace Emotes
                     Screen.ShowNotification(emote.Description);
                 }
                 else
-                    Screen.ShowNotification(model.errorVehicle.ElementAt(model.language).title);
+                    Screen.ShowNotification(errors.ElementAt(0));
             }
             else
-                Screen.ShowNotification(model.errorPlayerID.ElementAt(model.language).title);
+                Screen.ShowNotification(errors.ElementAt(2));
         }
 
         #endregion
@@ -134,7 +144,7 @@ namespace Emotes
             if (emote != null)
                 PlayEmote(emote);
             else
-                Screen.ShowNotification(Strings.ErrorUnexpected[(int)LanguageEnum.EN]);
+                Screen.ShowNotification(errors.ElementAt(1));
 
             menu.Visible = false;
         }
@@ -144,14 +154,8 @@ namespace Emotes
         {
             string message = (string)_message;
             string test = string.Empty;
-
-            if (message.StartsWith("/load"))
-            {
-                test = LoadFile();
-                Screen.ShowNotification("Test: " + test.Length);
-                LoadModelFromString(test); // 2 times?
-            }
-            else if (message.StartsWith("/emote"))
+            
+            if (message.StartsWith("/emote"))
                 PrintEmoteList();
             else if (message.StartsWith("/cancel"))
                 CancelEmote();
@@ -160,8 +164,6 @@ namespace Emotes
                 Emote emote = emotes.FirstOrDefault(o => o.Command == message);
                 if (emote != null)
                     PlayEmote(emote);
-                else
-                    Screen.ShowNotification(model.errorBadArgs.ElementAt(model.language).title);
             }
         }
 

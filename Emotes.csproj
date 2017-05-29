@@ -70,31 +70,29 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CitizenFX.Core">
-      <HintPath>..\..\..\..\Desktop\dll\CitizenFX.Core.dll</HintPath>
+      <HintPath>..\..\..\..\FiveM\FiveM.app\citizen\clr2\lib\mono\4.5\CitizenFX.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Web.Extensions" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models.cs" />
+    <Compile Include="Config.cs" />
+    <Compile Include="JSONParser.cs" />
     <Compile Include="Emote.cs" />
     <Compile Include="Emotes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="strings.json" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(ProjectDir)strings.json" "C:\Users\marceau\Desktop\Code\server\cfx-server\resources\emotes"
-copy /y "$(TargetPath)" "C:\Users\marceau\Desktop\Code\server\cfx-server\resources\emotes"</PostBuildEvent>
+    <PostBuildEvent>copy /y "$(TargetPath)" "C:\Users\marceau\Desktop\Code\server\cfx-server\resources\emotes"</PostBuildEvent>
   </PropertyGroup>
   <ProjectExtensions />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

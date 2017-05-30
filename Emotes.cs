@@ -32,10 +32,11 @@ namespace Emotes
             }
             */
 
-            LoadConfig();
-            LoadJson();
+            //LoadConfig();
+            //LoadJson();
 
             // FiveM related things
+            EventHandlers["onPlayerJoining"] += new Action<dynamic, dynamic>(OnPlayerJoining);
             EventHandlers["chatMessage"] += new Action<dynamic, dynamic, dynamic>(ChatMessage);
             Tick += OnTick;
         }
@@ -63,17 +64,36 @@ namespace Emotes
             foreach (string line in lines)
             {
                 string[] content = line.Split('=');
-
+                
                 if (content[0].ToLower() == "jsonfile")
+                {
                     config.JsonFile = content[1];
+                    config.JsonFile = config.JsonFile.Replace("\n", "");
+                }
+                    
             }
         }
 
         void LoadJson()
         {
-            Debug.WriteLine("{0}", config.JsonFile);
-            
-            string jsonString = Function.Call<string>(Hash.LOAD_RESOURCE_FILE, "emotes", "english.json"); // I have to find how to dynamicly load files, feels like i can only pass const strings
+            string jsonString = string.Empty;
+            string fileName = string.Empty;
+
+            foreach (char c in config.JsonFile)
+            {
+                Debug.WriteLine("{0}:{1}", (int)c, c);
+                if ((int)c != 13)
+                    fileName += c;
+            }
+
+            foreach (char c in fileName)
+            {
+                Debug.WriteLine("{0}:{1}", (int)c, c);
+            }
+            Debug.WriteLine("{0}", fileName);
+
+            jsonString = Function.Call<string>(Hash.LOAD_RESOURCE_FILE, "emotes", fileName);
+
             Debug.WriteLine("{0}", jsonString);
 
             Dictionary<string, object> jsonObject = (Dictionary<string, object>)jsonString.FromJson<object>();
@@ -94,7 +114,7 @@ namespace Emotes
             errors.Add((string)jsonObject["errorVehicle"]);
             errors.Add((string)jsonObject["errorUnexpected"]);
             errors.Add((string)jsonObject["errorPlayerID"]);
-            
+
             foreach (Emote emote in emotes)
             {
                 if (emotesText == string.Empty)
@@ -149,6 +169,12 @@ namespace Emotes
             menu.Visible = false;
         }
         */
+
+        void OnPlayerJoining(dynamic arg1, dynamic arg2)
+        {
+            LoadConfig();
+            LoadJson();
+        }
 
         void ChatMessage(dynamic _source, dynamic _name, dynamic _message)
         {

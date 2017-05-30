@@ -3,6 +3,7 @@
 # TODO
 
 - Add gui
+- Add more emotes: https://pastebin.com/6mrYTdQv
 
 # KNOWN ISSUE
 

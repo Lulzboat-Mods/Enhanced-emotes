@@ -3,67 +3,78 @@
     {  
       "title":"/cop",
       "hash":"WORLD_HUMAN_COP_IDLES",
-      "boolean":true,
+      "delay":0,
+      "playEnterAnim":true,
       "description":"Cop"
     },
     {  
       "title":"/sit",
       "hash":"WORLD_HUMAN_PICNIC",
-      "boolean":true,
+      "delay":0,
+      "playEnterAnim":true,
       "description":"Sit"
     },
     {  
       "title":"/kneel",
       "hash":"CODE_HUMAN_MEDIC_KNEEL",
-      "boolean":true,
+      "delay":0,
+      "playEnterAnim":true,
       "description":"Kneel"
     },
     {  
       "title":"/medic",
       "hash":"CODE_HUMAN_MEDIC_TEND_TO_DEAD",
-      "boolean":true,
+      "delay":0,
+      "playEnterAnim":true,
       "description":"Medic"
     },
     {  
       "title":"/notepad",
       "hash":"CODE_HUMAN_MEDIC_TIME_OF_DEATH",
-      "boolean":true,
+      "delay":0,
+      "playEnterAnim":true,
       "description":"Notepad"
     },
     {  
       "title":"/traffic",
       "hash":"WORLD_HUMAN_CAR_PARK_ATTENDANT",
-      "boolean":false,
+      "delay":0,
+      "playEnterAnim":false,
       "description":"Traffic"
     },
     {  
       "title":"/photo",
       "hash":"WORLD_HUMAN_PAPARAZZI",
-      "boolean":false,
+      "delay":0,
+      "playEnterAnim":false,
       "description":"Photo"
     },
     {  
       "title":"/clipboard",
       "hash":"WORLD_HUMAN_CLIPBOARD",
-      "boolean":false,
+      "delay":0,
+      "playEnterAnim":false,
       "description":"Clipboard"
     },
     {  
       "title":"/lean",
       "hash":"WORLD_HUMAN_LEANING",
-      "boolean":true,
+      "delay":0,
+      "playEnterAnim":true,
       "description":"Lean"
     },
     {  
       "title":"/smoke",
       "hash":"WORLD_HUMAN_SMOKING",
-      "boolean":true,
+      "delay":0,
+      "playEnterAnim":true,
       "description":"Smoke"
     },
     {  
       "title":"/drink",
       "hash":"WORLD_HUMAN_DRINKING",
-      "boolean":true,
+      "delay":0,
+      "playEnterAnim":true,
       "description":"Drink"
     }
   ],

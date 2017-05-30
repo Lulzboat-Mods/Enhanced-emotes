@@ -12,7 +12,7 @@ namespace Emotes
         public string EmoteType { get; set; }
         public string Command { get; set; }
         public string Description { get; set; }
-        public int IntValue { get; set; }
-        public bool BoolValue { get; set; }
+        public int Delay { get; set; }
+        public bool PlayEnterAnim { get; set; }
     }
 }

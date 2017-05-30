@@ -81,7 +81,6 @@ namespace Emotes
 
             foreach (char c in config.JsonFile)
             {
-                Debug.WriteLine("{0}:{1}", (int)c, c);
                 if ((int)c != 13)
                     fileName += c;
             }
@@ -107,8 +106,8 @@ namespace Emotes
                     EmoteType = (string)emote["hash"],
                     Command = (string)emote["title"],
                     Description = (string)emote["description"],
-                    IntValue = 0,
-                    BoolValue = (bool)emote["boolean"]
+                    Delay = (int)emote["delay"],
+                    PlayEnterAnim = (bool)emote["playEnterAnim"]
                 });
             }
             errors.Add((string)jsonObject["errorVehicle"]);
@@ -142,7 +141,7 @@ namespace Emotes
 
                 if (!isInVehicle)
                 {
-                    Function.Call(Hash.TASK_START_SCENARIO_IN_PLACE, Game.PlayerPed, emote.EmoteType, emote.IntValue, emote.BoolValue);
+                    Function.Call(Hash.TASK_START_SCENARIO_IN_PLACE, Game.PlayerPed, emote.EmoteType, emote.Delay, emote.PlayEnterAnim);
                     Screen.ShowNotification(emote.Description);
                 }
                 else

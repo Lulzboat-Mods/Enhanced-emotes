@@ -40,7 +40,7 @@ namespace Emotes
             {
                 CancelEmote();
             }
-            else if (Game.IsControlJustPressed(0, Control.VehicleHorn))
+            else if (Game.IsControlJustPressed(0, Control.ReplayShowhotkey))
                 mainMenu.Visible = !mainMenu.Visible;
         }
 

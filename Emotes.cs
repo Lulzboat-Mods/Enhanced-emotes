@@ -1,6 +1,7 @@
 ﻿using CitizenFX.Core;
 using CitizenFX.Core.Native;
 using CitizenFX.Core.UI;
+using NativeUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,33 +17,21 @@ namespace Emotes
         List<string> errors = new List<string>();
         Config config = new Config();
 
+        MenuPool menuPool;
+        UIMenu mainMenu;
+
         public Emotes()
         {
-            /* 
-             * MENU LATER
-             */
-            /*
-            menu = new UIMenu("Emotes", "");
-            menu.OnItemSelect += OnItemSelect;
-            menu.Visible = false;
-
-            foreach (Emote emote in emotes)
-            {
-                menu.AddItem(new UIMenuItem(emote.Description));
-            }
-            */
-
-            //LoadConfig();
-            //LoadJson();
-
             // FiveM related things
             EventHandlers["onPlayerJoining"] += new Action<dynamic, dynamic>(OnPlayerJoining);
-            EventHandlers["chatMessage"] += new Action<dynamic, dynamic, dynamic>(ChatMessage);
             Tick += OnTick;
         }
 
         public async Task OnTick()
         {
+            //if (menuLoaded)
+            menuPool.ProcessMenus();
+
             // Cancel emote when player is moving
             if (Game.IsControlJustReleased(0, Control.MoveUpOnly) ||
                 Game.IsControlJustReleased(0, Control.MoveDownOnly) ||
@@ -51,6 +40,8 @@ namespace Emotes
             {
                 CancelEmote();
             }
+            else if (Game.IsControlJustPressed(0, Control.VehicleHorn))
+                mainMenu.Visible = !mainMenu.Visible;
         }
 
         #region Methods
@@ -70,7 +61,6 @@ namespace Emotes
                     config.JsonFile = content[1];
                     config.JsonFile = config.JsonFile.Replace("\n", "");
                 }
-                    
             }
         }
 
@@ -84,20 +74,11 @@ namespace Emotes
                 if ((int)c != 13)
                     fileName += c;
             }
-
-            foreach (char c in fileName)
-            {
-                Debug.WriteLine("{0}:{1}", (int)c, c);
-            }
-            Debug.WriteLine("{0}", fileName);
-
+            
             jsonString = Function.Call<string>(Hash.LOAD_RESOURCE_FILE, "emotes", fileName);
-
-            Debug.WriteLine("{0}", jsonString);
-
-            Dictionary<string, object> jsonObject = (Dictionary<string, object>)jsonString.FromJson<object>();
-
-            List<object> emoteList = (List<object>)jsonObject["emotes"];
+            
+            var jsonObject = (Dictionary<string, object>)jsonString.FromJson<object>();
+            var emoteList = (List<object>)jsonObject["emotes"];
 
             foreach (Dictionary<string, object> emote in emoteList)
             {
@@ -154,8 +135,7 @@ namespace Emotes
         #endregion
 
         #region Events
-
-        /*
+        
         void OnItemSelect(UIMenu sender, UIMenuItem item, int index)
         {
             Emote emote = emotes.FirstOrDefault(o => o.Description == item.Text);
@@ -165,31 +145,28 @@ namespace Emotes
             else
                 Screen.ShowNotification(errors.ElementAt(1));
 
-            menu.Visible = false;
+            mainMenu.Visible = false;
         }
-        */
 
+        // TODO: Should check if player already loaded
         void OnPlayerJoining(dynamic arg1, dynamic arg2)
         {
+            // Récupère les configs et la liste d'emote
             LoadConfig();
             LoadJson();
-        }
 
-        void ChatMessage(dynamic _source, dynamic _name, dynamic _message)
-        {
-            string message = (string)_message;
-            string test = string.Empty;
-            
-            if (message.StartsWith("/emote"))
-                PrintEmoteList();
-            else if (message.StartsWith("/cancel"))
-                CancelEmote();
-            else
+            // Crée le menu
+            menuPool = new MenuPool();
+            mainMenu = new UIMenu("Emotes", "Select an emote");
+            mainMenu.MouseControlsEnabled = false;
+            menuPool.Add(mainMenu);
+            mainMenu.OnItemSelect += OnItemSelect;
+
+            foreach (Emote emote in emotes)
             {
-                Emote emote = emotes.FirstOrDefault(o => o.Command == message);
-                if (emote != null)
-                    PlayEmote(emote);
+                mainMenu.AddItem(new UIMenuItem(emote.Description));
             }
+            menuPool.RefreshIndex();
         }
 
         #endregion

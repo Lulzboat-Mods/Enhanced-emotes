@@ -72,6 +72,9 @@
     <Reference Include="CitizenFX.Core">
       <HintPath>..\..\..\FiveM\FiveM.app\citizen\clr2\lib\mono\4.5\CitizenFX.Core.dll</HintPath>
     </Reference>
+    <Reference Include="nativeui.net">
+      <HintPath>.\nativeui.net.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
@@ -88,7 +91,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy /y "$(TargetPath)" "C:\Users\marceau\Desktop\Code\server\cfx-server\resources\emotes"</PostBuildEvent>
+    <PostBuildEvent>copy /y "$(TargetPath)" "C:\Users\marceau\Desktop\Server\cfx-server\resources\emotes"</PostBuildEvent>
   </PropertyGroup>
   <ProjectExtensions />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

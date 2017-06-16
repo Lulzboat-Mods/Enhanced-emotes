@@ -3,9 +3,9 @@
 ## PRESENTATION
 
 The mod permit you to play emotes with a gui.
-By default, you can open the menu with K, move into it with UP/DOWN arrows, and select with ENTER 
-Moving cancel the emote 
-You can add you own emotes by modifying the existing json files, or create your own with the template file located in files folder 
+By default, you can open the menu with K, move into it with UP/DOWN arrows, and select with ENTER <br /> 
+Moving cancel the emote <br /> 
+You can add you own emotes by modifying the existing json files, or create your own with the template file located in files folder <br />
 
 ![Menu](https://puu.sh/wk4cB.jpg)
 ![Interaction](https://puu.sh/wk4fP.jpg)

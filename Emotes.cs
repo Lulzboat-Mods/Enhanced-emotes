@@ -24,7 +24,10 @@ namespace Emotes
         public Emotes()
         {
             // FiveM related things
-            EventHandlers["onPlayerJoining"] += new Action<dynamic, dynamic>(OnPlayerJoining);
+            if (Game.IsLoading)
+                EventHandlers["onPlayerJoining"] += new Action<dynamic, dynamic>(OnPlayerJoining);
+            else
+                OnPlayerJoining(null, null);
             Tick += CancelEmoteTick;
         }
 

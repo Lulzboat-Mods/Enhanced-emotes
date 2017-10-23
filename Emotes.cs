@@ -16,6 +16,7 @@ namespace Emotes
         List<Emote> emotes = new List<Emote>();
         List<string> errors = new List<string>();
         Config config = new Config();
+        bool isEmotePlaying = false;
 
         MenuPool menuPool;
         UIMenu mainMenu;
@@ -24,19 +25,24 @@ namespace Emotes
         {
             // FiveM related things
             EventHandlers["onPlayerJoining"] += new Action<dynamic, dynamic>(OnPlayerJoining);
-            Tick += OnTick;
+            Tick += CancelEmoteTick;
+            Tick += MenuTick;
         }
 
-        public async Task OnTick()
+        async Task MenuTick()
+        {
+            await Delay(0);
+        }
+        async Task CancelEmoteTick()
         {
             //if (menuLoaded)
             menuPool.ProcessMenus();
 
             // Cancel emote when player is moving
-            if (Game.IsControlJustReleased(0, Control.MoveUpOnly) ||
+            if ((Game.IsControlJustReleased(0, Control.MoveUpOnly) ||
                 Game.IsControlJustReleased(0, Control.MoveDownOnly) ||
                 Game.IsControlJustReleased(0, Control.MoveLeftOnly) ||
-                Game.IsControlJustReleased(0, Control.MoveRightOnly))
+                Game.IsControlJustReleased(0, Control.MoveRightOnly)) && isEmotePlaying)
             {
                 CancelEmote();
             }
@@ -112,6 +118,7 @@ namespace Emotes
         void CancelEmote()
         {
             Function.Call(Hash.CLEAR_PED_TASKS, Game.PlayerPed);
+            isEmotePlaying = false;
         }
 
         void PlayEmote(Emote emote)
@@ -123,6 +130,7 @@ namespace Emotes
                 if (!isInVehicle)
                 {
                     Function.Call(Hash.TASK_START_SCENARIO_IN_PLACE, Game.PlayerPed, emote.EmoteType, emote.Delay, emote.PlayEnterAnim);
+                    isEmotePlaying = true;
                     Screen.ShowNotification(emote.Description);
                 }
                 else
@@ -157,8 +165,10 @@ namespace Emotes
 
             // Crée le menu
             menuPool = new MenuPool();
-            mainMenu = new UIMenu("Emotes", "Select an emote");
-            mainMenu.MouseControlsEnabled = false;
+            mainMenu = new UIMenu("Emotes", "Select an emote")
+            {
+                MouseControlsEnabled = false
+            };
             menuPool.Add(mainMenu);
             mainMenu.OnItemSelect += OnItemSelect;
 

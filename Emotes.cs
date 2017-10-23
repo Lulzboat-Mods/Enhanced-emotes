@@ -154,6 +154,9 @@ namespace Emotes
         // TODO: Should check if player already loaded
         void OnPlayerJoining(dynamic arg1, dynamic arg2)
         {
+            if (emotes.Count != 0)
+                return;
+
             // Récupère les configs et la liste d'emote
             LoadConfig();
             LoadJson();

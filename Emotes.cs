@@ -26,13 +26,8 @@ namespace Emotes
             // FiveM related things
             EventHandlers["onPlayerJoining"] += new Action<dynamic, dynamic>(OnPlayerJoining);
             Tick += CancelEmoteTick;
-            Tick += MenuTick;
         }
 
-        async Task MenuTick()
-        {
-            await Delay(0);
-        }
         async Task CancelEmoteTick()
         {
             //if (menuLoaded)
